@@ -1,6 +1,6 @@
 # app/controllers/api/tasks_controller.rb
 class Api::TasksController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy, :assign, :progress]
+  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy, :assign, :progress, :overdue]
   before_action :set_task, only: [:show, :update, :destroy, :assign, :progress]
 
   def create
@@ -86,6 +86,20 @@ class Api::TasksController < ApplicationController
       else
         render json: { error: "Progress should be between 0 and 100" }, status: :unprocessable_entity
       end
+  end
+
+  def overdue
+    # Get http://localhost:3000/api/tasks/overdue
+
+    overdue_tasks = Task.where('due_date < ?', Time.now)
+    render json: overdue_tasks
+  end
+
+  def by_status
+    # Get http://localhost:3000/api/tasks/status/:status
+
+    tasks = Task.where(status: params[:status])
+    render json: tasks
   end
 
   private
