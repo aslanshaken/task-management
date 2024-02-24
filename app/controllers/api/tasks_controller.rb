@@ -102,6 +102,21 @@ class Api::TasksController < ApplicationController
     render json: tasks
   end
 
+  def completed_within_range
+    # Get http://localhost:3000/api/tasks/completed
+    # {
+    #   "startDate": "2024-01-20",
+    #   "endDate": "2024-05-05"
+    # }
+
+    start_date = Date.parse(params[:startDate])
+    end_date = Date.parse(params[:endDate])
+    byebug
+    completed_tasks = Task.where(completed_date: start_date..end_date)
+                            .where.not(completed_date: nil)
+    render json: completed_tasks
+  end
+
   private
 
   def set_task
