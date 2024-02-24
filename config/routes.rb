@@ -8,7 +8,7 @@ Rails.application.routes.draw do
         end
       end
       resources :users do
-        get 'tasks', to: 'tasks#user_tasks'
+        get 'tasks'
       end
       get 'tasks/overdue', to: 'tasks#overdue'
       get 'tasks/status/:status', to: 'tasks#by_status'
