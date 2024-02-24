@@ -47,8 +47,10 @@ class Api::TasksController < ApplicationController
   def index
     # Get /api/tasks
 
-    @tasks = Task.all
-    render json: @tasks
+    tasks = Task.all
+    priority_queue = ::TaskPriorityQueue.new(tasks)
+    sorted_tasks = priority_queue.sorted_tasks
+    render json: sorted_tasks
   end
 
   def assign
@@ -119,7 +121,7 @@ class Api::TasksController < ApplicationController
 
   def statistics
     # Get http://localhost:3000/api/tasks/statistics
-    
+
     total_tasks = Task.count
     completed_tasks = Task.where.not(completed_date: nil).count
     percentage_completed = (completed_tasks.to_f / total_tasks * 100).round(2)
