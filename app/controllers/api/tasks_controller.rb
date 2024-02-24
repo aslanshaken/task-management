@@ -72,17 +72,20 @@ class Api::TasksController < ApplicationController
     end
   end
 
-  def assigned_tasks
-      @user = User.find(params[:user_id])
-      @tasks = @user.tasks
-      render json: @tasks
-    rescue ActiveRecord::RecordNotFound
-      render json: { error: "User not found" }, status: :not_found
-    end
-  end
-  
-  # PUT /api/tasks/{taskId}/progress
   def progress
+    # Put /api/tasks/{taskId}/progress?progress=30
+
+    progress = params[:progress].to_i
+      if progress >= 0 && progress <= 100
+        @task.progress = progress
+        if @task.save
+          render json: @task
+        else
+          render json: @task.errors, status: :unprocessable_entity
+        end
+      else
+        render json: { error: "Progress should be between 0 and 100" }, status: :unprocessable_entity
+      end
   end
 
   private
