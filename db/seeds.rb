@@ -1,7 +1,6 @@
 # db/seeds.rb
 require 'faker'
 
-Assignment.destroy_all
 Task.destroy_all
 User.destroy_all
 
@@ -16,9 +15,4 @@ end
     status: ['Pending', 'In Progress', 'Completed'].sample,
     priority: ['High', 'Medium', 'Low'].sample
   )
-end
-
-Task.all.each do |task|
-  user = User.offset(rand(User.count)).first
-  Assignment.create(task_id: task.id, user_id: user.id)
 end

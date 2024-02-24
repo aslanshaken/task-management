@@ -1,6 +1,6 @@
 # app/controllers/api/tasks_controller.rb
 class Api::TasksController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy]
+  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy, :assign, :progress]
   before_action :set_task, only: [:show, :update, :destroy, :assign, :progress]
 
   def create
@@ -46,13 +46,30 @@ class Api::TasksController < ApplicationController
 
   def index
     # Get /api/tasks
-    
+
     @tasks = Task.all
     render json: @tasks
   end
 
-  # POST /api/tasks/{taskId}/assign
   def assign
+    # Post /api/tasks/{taskId}/assign
+    # user_id: id
+
+    user_id = params[:user_id]
+    user = User.find_by(id: user_id)
+
+    if user.nil?
+      render json: { error: "User not found" }, status: :not_found
+      return
+    end
+
+    @task.user_id = user.id
+
+    if @task.save
+      render json: @task, status: :ok
+    else
+      render json: { error: "Failed to assign task" }, status: :unprocessable_entity
+    end
   end
 
   # PUT /api/tasks/{taskId}/progress
