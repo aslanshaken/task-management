@@ -1,6 +1,6 @@
 # app/controllers/api/tasks_controller.rb
 class Api::TasksController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:create, :update]
+  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy]
   before_action :set_task, only: [:show, :update, :destroy, :assign, :progress]
 
   def create
@@ -37,8 +37,18 @@ class Api::TasksController < ApplicationController
     end
   end
 
-  # DELETE /api/tasks/{taskId}
   def destroy
+    # Delete /api/tasks/{taskId}
+
+    @task.destroy
+    head :no_content
+  end
+
+  def index
+    # Get /api/tasks
+    
+    @tasks = Task.all
+    render json: @tasks
   end
 
   # POST /api/tasks/{taskId}/assign
@@ -47,10 +57,6 @@ class Api::TasksController < ApplicationController
 
   # PUT /api/tasks/{taskId}/progress
   def progress
-  end
-
-  # GET /api/tasks
-  def index
   end
 
   private
