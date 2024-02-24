@@ -117,6 +117,20 @@ class Api::TasksController < ApplicationController
     render json: completed_tasks
   end
 
+  def statistics
+    # Get http://localhost:3000/api/tasks/statistics
+    
+    total_tasks = Task.count
+    completed_tasks = Task.where.not(completed_date: nil).count
+    percentage_completed = (completed_tasks.to_f / total_tasks * 100).round(2)
+    
+    render json: {
+      total_tasks: total_tasks,
+      completed_tasks: completed_tasks,
+      percentage_completed: percentage_completed
+    }
+  end
+
   private
 
   def set_task
